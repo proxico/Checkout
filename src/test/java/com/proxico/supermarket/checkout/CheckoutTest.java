@@ -112,4 +112,22 @@ public class CheckoutTest {
         assertEquals(expectedStringPrice.length(), length);
         verify(buffer).put(expectedStringPrice);
     }
+
+    @Test
+    public void readEmptyResultWhenAllIsFetched() throws Exception {
+        // arrange
+        TotalPriceCalculator totalPriceCalculator = mock(TotalPriceCalculator.class);
+        CharBuffer buffer = mock(CharBuffer.class);
+        Checkout checkout = new CheckoutImpl(totalPriceCalculator);
+
+        when(totalPriceCalculator.calcTotalPrice("A", 1)).thenReturn(50L);
+
+        // act
+        checkout.scan("A", 1); // push an item
+        checkout.read(buffer); // pull the item's total rice
+        int length = checkout.read(buffer);
+
+        // assert
+        assertEquals(-1, length);
+    }
 }
